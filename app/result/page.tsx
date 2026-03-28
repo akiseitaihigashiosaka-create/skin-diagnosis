@@ -95,7 +95,11 @@ export default function ResultPage() {
   const secondaryColor = colorMap[secondary.color] ?? colorMap.amber;
 
   const lineText = `【肌タイプ診断結果】\n主タイプ：${primary.name}\n副タイプ：${secondary.name}\n詳しいケア方法を希望です！`;
-  const lineUrl = `https://line.me/R/ti/p/${lineId.startsWith("@") ? "%40" + lineId.slice(1) : lineId}`;
+  const encodedId = lineId.startsWith("@") ? "%40" + lineId.slice(1) : lineId;
+  const isMobile = typeof navigator !== "undefined" && /iPhone|Android|iPad/i.test(navigator.userAgent);
+  const lineUrl = isMobile
+    ? `https://line.me/R/oaMessage/${encodedId}?text=${encodeURIComponent(lineText)}`
+    : `https://line.me/R/ti/p/${encodedId}`;
 
   return (
     <main className="min-h-screen bg-[#0D3D30]">
