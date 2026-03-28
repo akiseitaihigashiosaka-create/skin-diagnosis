@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --dark-green: #0D3D30;
+  --gold: #C8A84A;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
