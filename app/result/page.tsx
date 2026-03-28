@@ -59,7 +59,7 @@ export default function ResultPage() {
   const router = useRouter();
   const [primary, setPrimary] = useState<SkinType | null>(null);
   const [secondary, setSecondary] = useState<SkinType | null>(null);
-  const lineId = process.env.NEXT_PUBLIC_LINE_ID ?? "@your_line_id";
+  const lineId = "@143radsn";
 
   useEffect(() => {
     const saved = sessionStorage.getItem("quiz_answers");
@@ -95,10 +95,7 @@ export default function ResultPage() {
   const secondaryColor = colorMap[secondary.color] ?? colorMap.amber;
 
   const lineText = `【肌タイプ診断結果】\n主タイプ：${primary.name}\n副タイプ：${secondary.name}\n詳しいケア方法を希望です！`;
-  const isMobile = typeof navigator !== "undefined" && /iPhone|Android|iPad/i.test(navigator.userAgent);
-  const lineUrl = isMobile
-    ? `https://line.me/R/oaMessage/${lineId}?text=${encodeURIComponent(lineText)}`
-    : `https://line.me/ti/p/${lineId}`;
+  const lineUrl = `https://line.me/R/ti/p/${lineId.startsWith("@") ? "%40" + lineId.slice(1) : lineId}`;
 
   return (
     <main className="min-h-screen bg-[#0D3D30]">
@@ -188,6 +185,11 @@ export default function ResultPage() {
             </svg>
             LINEを開く
           </a>
+
+          {/* デバッグ表示 */}
+          <p className="text-white text-xs break-all mt-3 leading-relaxed bg-black/30 p-2 rounded-lg">
+            🔗 {lineUrl}
+          </p>
         </div>
 
         {/* もう一度診断ボタン */}
