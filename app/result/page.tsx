@@ -59,6 +59,7 @@ export default function ResultPage() {
   const router = useRouter();
   const [primary, setPrimary] = useState<SkinType | null>(null);
   const [secondary, setSecondary] = useState<SkinType | null>(null);
+  const [copied, setCopied] = useState(false);
   const lineId = "@143radsn";
 
   useEffect(() => {
@@ -96,10 +97,20 @@ export default function ResultPage() {
 
   const lineText = `【肌タイプ診断結果】\n主タイプ：${primary.name}\n副タイプ：${secondary.name}\n詳しいケア方法を希望です！`;
   const encodedId = lineId.startsWith("@") ? "%40" + lineId.slice(1) : lineId;
-  const isMobile = typeof navigator !== "undefined" && /iPhone|Android|iPad/i.test(navigator.userAgent);
-  const lineUrl = isMobile
-    ? `https://line.me/R/oaMessage/${encodedId}?text=${encodeURIComponent(lineText)}`
-    : `https://line.me/R/ti/p/${encodedId}`;
+  const lineUrl = `https://line.me/R/ti/p/${encodedId}`;
+
+  const handleLineOpen = async () => {
+    try {
+      await navigator.clipboard.writeText(lineText);
+      setCopied(true);
+      setTimeout(() => {
+        window.open(lineUrl, "_blank");
+        setCopied(false);
+      }, 600);
+    } catch {
+      window.open(lineUrl, "_blank");
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#0D3D30]">
@@ -178,21 +189,21 @@ export default function ResultPage() {
           </div>
 
           {/* LINEを開くボタン */}
-          <a
-            href={lineUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full bg-[#06C755] hover:bg-[#05b54c] active:bg-[#04a344] text-white font-bold py-4 px-6 rounded-full text-sm tracking-wide transition-colors duration-200 shadow-lg shadow-[#06C755]/20"
+          <button
+            onClick={handleLineOpen}
+            className={`flex items-center justify-center gap-2 w-full font-bold py-4 px-6 rounded-full text-sm tracking-wide transition-all duration-200 shadow-lg ${
+              copied
+                ? "bg-[#06C755]/70 text-white shadow-[#06C755]/10"
+                : "bg-[#06C755] hover:bg-[#05b54c] active:bg-[#04a344] text-white shadow-[#06C755]/20"
+            }`}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
               <path d="M12 2C6.477 2 2 6.038 2 11c0 2.88 1.46 5.45 3.75 7.16L5 22l3.37-1.75C9.39 20.72 10.67 21 12 21c5.523 0 10-4.038 10-9s-4.477-9-10-9z" />
             </svg>
-            LINEを開く
-          </a>
-
-          {/* デバッグ表示 */}
-          <p className="text-white text-xs break-all mt-3 leading-relaxed bg-black/30 p-2 rounded-lg">
-            🔗 {lineUrl}
+            {copied ? "テキストをコピーしました！" : "テキストをコピーしてLINEを開く"}
+          </button>
+          <p className="text-white/40 text-[10px] text-center mt-2">
+            LINEが開いたらメッセージ欄に貼り付けて送信してください
           </p>
         </div>
 
